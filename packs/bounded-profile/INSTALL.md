@@ -4,6 +4,8 @@ You are an AI installing this pack for a user. Your job is to compose a narrow, 
 
 Show the user what you plan to write before each write step. Do not write blindly.
 
+> **Non-standard home:** All paths below assume the user's home is `~`. If installing to a non-standard or test home, substitute that base for `~` in every path.
+
 ---
 
 ## Step 1 — Assess the user's actual workflow

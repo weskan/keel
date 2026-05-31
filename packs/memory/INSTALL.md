@@ -2,6 +2,8 @@
 
 You are an AI installing this pack for a user. Follow these steps in order. Show the user what you are about to do before each write step — do not write blindly.
 
+> **Non-standard home:** All paths below assume the user's home is `~`. If installing to a non-standard or test home, substitute that base for `~` in every path.
+
 ---
 
 ## Step 1 — Create the global memory root
@@ -47,7 +49,7 @@ Ask which pattern they prefer, or whether they want to decide per-project. Initi
 
 ## Step 5 — Offer to seed memory from existing notes
 
-Ask: "Do you have any notes, documents, or previous AI conversations with context you'd like to import into your memory?" If yes, read what they share and distill it into appropriate leaf files using the templates in `src/leaf-templates.md`. Add a pointer for each in the relevant `MEMORY.md` index.
+Ask: "Do you have any notes, documents, or previous AI conversations with context you'd like to import into your memory?" If yes, read what they share and distill it into appropriate leaf files using the four typed formats in `src/leaf-templates.md` (one atomic leaf file per durable fact, plus a one-line entry in the relevant `MEMORY.md` index). Add a pointer for each new leaf in the relevant `MEMORY.md` index.
 
 No interview is required otherwise — the memory system is structural, not persona-based. The AI fills it over time as it learns things about the user.
 

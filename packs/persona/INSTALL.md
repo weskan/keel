@@ -2,6 +2,8 @@
 
 You are an AI installer. Follow these steps in order. Do not skip steps or combine them.
 
+> **Non-standard home:** All paths below assume the user's home is `~`. If installing to a non-standard or test home, substitute that base for `~` in every path.
+
 ---
 
 ## Step 1 — Interview the user to author their identity
@@ -42,13 +44,13 @@ Tell the user: "The Constitution contains ten universal Laws that govern how I w
 
 ## Step 3 — Wire the @-import block
 
-Run the deploy script:
+Run the deploy script. Substitute the real absolute path to the keel repo for `<path-to-keel>`. If installing to a non-standard home, pass that path as the first argument; omit the argument to default to `~`.
 
 ```bash
-bash src/deploy-persona.sh
+bash "<path-to-keel>/packs/persona/src/deploy-persona.sh" [TARGET_HOME]
 ```
 
-This appends an `@`-import block to `~/.claude/CLAUDE.md` that forces Claude to inline both `IDENTITY.md` and `CONSTITUTION.md` at the start of every session. The script is idempotent — safe to re-run after future edits.
+This appends an `@`-import block to `~/.claude/CLAUDE.md` (or `$TARGET_HOME/.claude/CLAUDE.md`) that forces Claude to inline both `IDENTITY.md` and `CONSTITUTION.md` at the start of every session. The script is idempotent — safe to re-run after future edits. There is no requirement to run it from inside the pack directory; the path above resolves correctly from any working directory.
 
 ---
 

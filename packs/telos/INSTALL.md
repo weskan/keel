@@ -2,6 +2,8 @@
 
 You are an AI installer. Follow these steps in order. Do not skip steps or combine them.
 
+> **Non-standard home:** All paths below assume the user's home is `~`. If installing to a non-standard or test home, substitute that base for `~` in every path.
+
 ---
 
 ## Step 1 — Run the interview
@@ -18,6 +20,7 @@ The six areas, in order:
 6. **Context map** — "Give me the factual ground: key people in your world, ventures you're running, your environment and tools. Facts, not goals — I'll use this to understand who and what I'm working with."
 
 **Critical guidance:**
+- If installing unattended (no live user to converse with), present all six prompts at once and proceed from a single combined response.
 - Do NOT guess or fill in personal areas (mission, values, faith, family, convictions) — always ask. These are the user's, not yours to infer.
 - If you sense a plausible answer from prior conversation, surface it as a hypothesis: "I'm hearing that your mission might be X — is that right, or would you phrase it differently?" Let them correct it.
 - Keep your questions open. Avoid leading questions that presuppose the answer.

@@ -19,8 +19,8 @@ Expected: `PASS`
 ## Check 2 — All six sections are present
 
 ```bash
-for section in "## Mission" "## Active threads" "## Values" "## What .good. looks like" "## Constraints" "## Context map"; do
-  grep -q "$section" "$TELOS_PATH" && echo "PASS: $section" || echo "FAIL: $section missing"
+for section in "## Mission" "## Active threads" "## Values" "## What good looks like" "## Constraints" "## Context map"; do
+  grep -qF "$section" "$TELOS_PATH" && echo "PASS: $section" || echo "FAIL: $section missing"
 done
 ```
 
