@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//${HOME}/**)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(rg:*)",
+      "Bash(grep:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Write(//${HOME}/**)",
+      "Edit(//${HOME}/**)"
+    ]
+  }
+}
