@@ -56,10 +56,37 @@ These are operations so routine and low-risk that stopping to prompt every time 
 
 ---
 
+## Two profiles, because `ask` means different things
+
+Before composing anything, establish **whether a human is present when this
+agent runs.** The answer changes the shape of the profile, not just its
+contents.
+
+**Interactive agent** — a human is at the keyboard. `ask` works as designed: a
+one-click confirm on state-changing operations. This is the default, and
+`src/settings.template.json` is its starting point.
+
+**Unattended agent** — a scheduled job, a poller, a background worker. Here
+**`ask` is not a prompt, it is a wall.** There is nobody to click. The turn
+stops, and it stops in a way that reads like the agent failing at the task
+rather than waiting for consent — so the failure is easy to misdiagnose for a
+long time. Use `src/settings.unattended.template.json`, which has a deliberately
+empty `ask` array.
+
+That empty array is the point, not an oversight. With no middle tier, every
+capability has to be sorted into allowed or denied *in advance, in writing, by a
+human*. The decision gets made deliberately instead of discovered at 3am.
+
+**The trap to avoid:** an unattended agent gets stuck, someone traces it to a
+permission wall, and widens `allow` until the wall disappears. That is how a
+least-privilege profile quietly becomes a broad one. Widen a profile because you
+decided the agent should have that capability — never to silence a prompt.
+
 ## Files in this pack
 
 | File | Purpose |
 |---|---|
-| `src/settings.template.json` | Starter permission profile (replace `${HOME}` before use) |
+| `src/settings.template.json` | Starter profile for an **interactive** agent (replace `${HOME}` before use) |
+| `src/settings.unattended.template.json` | Starter profile for an **unattended** agent — empty `ask` by design |
 | `INSTALL.md` | Step-by-step install instructions for an installing AI |
 | `VERIFY.md` | Verification checklist for an installing AI |

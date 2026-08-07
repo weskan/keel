@@ -1,0 +1,30 @@
+{
+  "_comment": "UNATTENDED / DAEMON PROFILE. Use this shape ONLY for an agent that runs with no human present - a scheduled job, a message-poller, a background worker. For an agent a human sits in front of, use settings.template.json instead. The defining difference is the empty 'ask' array; see the note below.",
+
+  "_why_ask_is_empty": "With no human present, an 'ask' rule is not a prompt - it is a wall. The turn stops, nothing answers it, and the job fails or hangs. Worse, it fails in a way that looks like the agent being unable to do the task rather than being blocked on consent. So an unattended profile has no middle tier: every action is either allowed outright or denied outright, and that forces the real decision to be made up front, in writing, by a human. Do not 'fix' a stuck daemon by widening allow until the wall goes away - decide deliberately which side of the line each capability belongs on.",
+
+  "permissions": {
+    "allow": [
+      "Read(//${HOME}/**)",
+      "Bash(ls:*)",
+      "Bash(rg:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Write(//${HOME}/${AGENT_WORKDIR}/**)",
+      "Edit(//${HOME}/${AGENT_WORKDIR}/**)"
+    ],
+
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -r:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(chmod -R:*)"
+    ],
+
+    "ask": []
+  }
+}

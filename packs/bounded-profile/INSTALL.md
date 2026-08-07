@@ -88,6 +88,18 @@ When in doubt, add it to `deny`. The user can always move something to `ask` if 
 
 ## Step 4 — Set the `ask` list for state-changing operations
 
+**First, ask the user one question: will a human be present when this agent
+runs?**
+
+If the agent is **unattended** — a scheduled job, a poller, a background worker
+— stop and switch to `src/settings.unattended.template.json`. Its `ask` array is
+empty on purpose, because with nobody at the keyboard an `ask` rule is a wall,
+not a prompt: the turn stops and the job fails, in a way that looks like the
+agent being incapable rather than blocked. Sort every capability into `allow` or
+`deny` deliberately, with the user, now — and skip the rest of this step.
+
+If a human **is** present, continue below.
+
 These operations are legitimate but warrant a one-click gate. Start with the base set and add their environment-specific mutations.
 
 **Base `ask` set:**
