@@ -13,7 +13,7 @@ This pack makes that pattern load automatically via Claude's `@`-import mechanis
 | File | Purpose |
 |---|---|
 | `src/IDENTITY.template.md` | Blank persona template with `${PLACEHOLDER}`s to fill in |
-| `src/CONSTITUTION.md` | Ten universal Laws that govern behavior (copy as-is; tweak if needed) |
+| `src/CONSTITUTION.md` | Thirteen universal Laws that govern behavior (copy as-is; tweak if needed) |
 | `src/deploy-persona.sh` | Idempotent script that wires the `@`-import block into `~/.claude/CLAUDE.md` |
 | `INSTALL.md` | Step-by-step instructions for an AI installer |
 | `VERIFY.md` | Checklist for an AI to confirm the installation succeeded |
