@@ -88,6 +88,36 @@ grep -q "verify-test" ~/.claude/memory/MEMORY.md && echo "FAIL (line still prese
 
 ---
 
+## Check 5 — The global tier actually reaches a session
+
+Checks 1–4 prove the files exist. They do **not** prove the global memory is
+ever loaded, and on a default setup it is not: the harness auto-injects only the
+project-local directory.
+
+**5a. Is the loader wired at all?**
+
+```bash
+grep -q "inject-memory-index" ~/.claude/settings.json && echo PASS || echo FAIL
+```
+
+FAIL → the `hooks` pack was not installed. Go do INSTALL.md Step 5. Until then
+this is a one-tier memory system.
+
+**5b. Does it reach a real session?**
+
+Ask the user to open a **fresh** session and ask their AI:
+
+> Quote the first three lines of the global memory index you were given.
+
+- **PASS** — it quotes lines matching `~/.claude/memory/MEMORY.md`.
+- **FAIL** — it has no index, or it describes going and reading the file rather
+  than being handed it. The global tier is not loading.
+
+Do not report the memory pack as installed on a 5b FAIL. Report it as
+project-local memory only, and say what is missing.
+
+---
+
 ## Summary
 
 | Check | What it confirms |
@@ -96,5 +126,8 @@ grep -q "verify-test" ~/.claude/memory/MEMORY.md && echo "FAIL (line still prese
 | 2 | Memory index file is initialized |
 | 3 | Memory snippet is active in CLAUDE.md |
 | 4 | AI can create, register, and remove a leaf file |
+| 5 | The global tier is actually loaded into a live session |
 
-All four checks PASS → the memory pack is correctly installed.
+Checks 1–4 PASS → the files are in place.
+Check 5 PASS → the memory system is genuinely two-tier. Without it, only the
+project-local tier is live, however complete the rest looks.

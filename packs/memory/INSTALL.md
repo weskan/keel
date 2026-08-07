@@ -47,7 +47,30 @@ Ask which pattern they prefer, or whether they want to decide per-project. Initi
 
 ---
 
-## Step 5 — Offer to seed memory from existing notes
+## Step 5 — Install the SessionStart hook (required, not optional)
+
+**Do not skip this step and do not treat it as a nice-to-have.**
+
+The harness auto-injects only the project-local memory directory. The global
+root you created in Step 1 is never loaded automatically. Without a hook, the
+snippet from Step 3 is asking the model to remember to read it every session —
+which fails, silently, and keeps failing without any symptom the user can see.
+
+Install the `hooks` pack now:
+
+- Read `packs/hooks/README.md` and follow `packs/hooks/INSTALL.md`.
+- It ships the `SessionStart` injector for macOS, Linux, and Windows, and
+  reports loudly in-session if the root is missing, the index is empty, or the
+  index cites files that no longer exist.
+
+If the user declines the hook, **say plainly what they are left with**: a
+one-tier memory system. Their project-local memory will work; their global
+memory will exist on disk and be read only when the model happens to remember
+to look. Do not describe the install as complete two-tier memory — it is not.
+
+---
+
+## Step 6 — Offer to seed memory from existing notes
 
 Ask: "Do you have any notes, documents, or previous AI conversations with context you'd like to import into your memory?" If yes, read what they share and distill it into appropriate leaf files using the four typed formats in `src/leaf-templates.md` (one atomic leaf file per durable fact, plus a one-line entry in the relevant `MEMORY.md` index). Add a pointer for each new leaf in the relevant `MEMORY.md` index.
 
@@ -65,3 +88,8 @@ After a complete install, these files should exist:
 | `~/.claude/memory/MEMORY.md` | Global memory index (from template) |
 | `~/.claude/CLAUDE.md` | Now includes the memory management snippet |
 | `~/.claude/CLAUDE.md.bak` | Backup of the pre-install CLAUDE.md (if one existed) |
+| `~/.claude/hooks/inject-memory-index.*` | The SessionStart loader, via the `hooks` pack (Step 5) |
+| `~/.claude/settings.json` | Now includes the `SessionStart` hook entry |
+
+If the last two rows are missing, the install is **one-tier**, not two. Say so
+in your report rather than describing it as finished.
