@@ -1,0 +1,47 @@
+{
+  "_comment": "Merge the 'hooks' key into the user's existing ~/.claude/settings.json. Do not replace the file - it may already hold permissions, model, statusLine, and other settings. Use ONE of the two SessionStart entries below, matching the user's platform, and delete the other. Replace <ABSOLUTE-PATH> with a real absolute path: in exec form (when 'args' is present) there is no shell, so ~ and %USERPROFILE% are NOT expanded.",
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "_comment": "macOS / Linux. Shell form: no 'args', so the command string is passed to sh -c.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/inject-memory-index.sh\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "_comment": "Windows. Exec form: 'args' is present, so there is no shell, the path must be literal and absolute, and 'command' must be a real .exe. -ExecutionPolicy Bypass is required because the default policy blocks unsigned local scripts; -NoProfile stops a user profile from printing a banner that would corrupt the JSON payload.",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe",
+            "args": [
+              "-NoProfile",
+              "-ExecutionPolicy", "Bypass",
+              "-File", "<ABSOLUTE-PATH>\\.claude\\hooks\\inject-memory-index.ps1"
+            ],
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "_comment": "Optional. Blocks writes to a protected path. Remove this block if the user did not ask for a write guard.",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/guard-protected-path.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

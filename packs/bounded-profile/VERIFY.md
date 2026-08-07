@@ -125,6 +125,29 @@ Expected: `PASS`. A `WARN` is not a hard failure (deny always wins), but review 
 
 ---
 
+## Check 6 — The profile shape matches how the agent runs
+
+Confirm which profile was installed against how the agent is actually invoked.
+
+```bash
+python3 - <<'PY'
+import json, pathlib
+p = json.loads(pathlib.Path.home().joinpath(".claude/settings.json").read_text())
+ask = (p.get("permissions") or {}).get("ask") or []
+print(f"ask has {len(ask)} rule(s)")
+PY
+```
+
+- **Unattended agent with a non-empty `ask`** → FAIL. Every one of those rules
+  is a wall that will stop the agent mid-turn with nobody to answer it. Move
+  each rule to `allow` or `deny` deliberately, with the user.
+- **Interactive agent with an empty `ask`** → WARN. Not wrong, but it means
+  there is no confirm tier at all; check that was intended rather than copied
+  from the unattended template.
+- Otherwise → PASS.
+
+---
+
 ## Summary
 
 | Check | What it confirms |
@@ -134,5 +157,6 @@ Expected: `PASS`. A `WARN` is not a hard failure (deny always wins), but review 
 | 3 | No bare-Bash wildcard in allow |
 | 4 | Pre-existing non-permission settings survived |
 | 5 | No confusing allow/deny overlap |
+| 6 | The profile shape matches attended vs unattended operation |
 
 Checks 1–3 must PASS for the profile to be safe. Check 4 must PASS or SKIP (SKIP is correct for fresh installs). Check 5 WARN is acceptable but worth reviewing.

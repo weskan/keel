@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  macOS launch agent for an unattended agent job.
+
+  Install to ~/Library/LaunchAgents/${JOB_LABEL}.plist
+
+  Choose ONE scheduling mode and delete the other:
+    - StartInterval / StartCalendarInterval  -> run on a schedule
+    - KeepAlive                              -> run continuously, restart on exit
+
+  Note EnvironmentVariables below. A launch agent starts with a minimal
+  environment - it does NOT inherit your shell profile or your interactive PATH.
+  Anything the job needs must be set here or resolved by absolute path.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>${JOB_LABEL}</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>${HOME}/.agent/bin/run-agent-job.sh</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>JOB_NAME</key>
+    <string>${JOB_NAME}</string>
+    <key>AGENT_BIN_PATH</key>
+    <string>${AGENT_BIN_PATH}</string>
+    <key>PATH</key>
+    <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <!-- SCHEDULED MODE: every N seconds. Delete if using KeepAlive. -->
+  <key>StartInterval</key>
+  <integer>${INTERVAL_SECONDS}</integer>
+
+  <!-- CONTINUOUS MODE: uncomment and delete StartInterval above.
+  <key>KeepAlive</key>
+  <true/>
+  <key>RunAtLoad</key>
+  <true/>
+  -->
+
+  <!-- Keep these. Without them a failure is invisible: launchd discards output
+       by default, and the job's own log may not capture a startup crash. -->
+  <key>StandardOutPath</key>
+  <string>${HOME}/.agent/logs/${JOB_NAME}.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>${HOME}/.agent/logs/${JOB_NAME}.err.log</string>
+
+  <key>ProcessType</key>
+  <string>Background</string>
+</dict>
+</plist>

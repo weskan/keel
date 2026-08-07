@@ -38,7 +38,13 @@ mkdir -p ~/.claude/persona
 cp src/CONSTITUTION.md ~/.claude/persona/CONSTITUTION.md
 ```
 
-Tell the user: "The Constitution contains ten universal Laws that govern how I work. You can open `~/.claude/persona/CONSTITUTION.md` and edit any Law you disagree with — these are yours."
+Tell the user: "The Constitution contains thirteen universal Laws that govern how I work. You can open `~/.claude/persona/CONSTITUTION.md` and edit any Law you disagree with — these are yours."
+
+Point out Law 11 specifically, and be straight about the tension in it: it tells
+me to take work end-to-end, *except* for changes to this Constitution, my
+permission profile, and your north-star document — those I propose and you
+confirm. If the user later wants me running more autonomously, that carve-out is
+the one thing that should not be relaxed along with everything else.
 
 ---
 

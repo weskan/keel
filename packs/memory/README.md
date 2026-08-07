@@ -15,6 +15,28 @@ Each root has a `MEMORY.md` index (one pointer per entry) and a set of leaf file
 
 ---
 
+## Important: the global tier does not load by itself
+
+Claude Code automatically injects the **project-local** memory directory into
+every session. It does **not** know your global root exists.
+
+That means an instruction like "read the global index at session start" is a
+request the model has to remember, every session, forever. It will not. And when
+it stops, nothing tells you: the agent keeps answering, just from its priors
+instead of your accumulated facts, and the only symptom is that it feels
+slightly worse than it used to. This failure can run for weeks unnoticed.
+
+**Install the `hooks` pack alongside this one.** It ships a `SessionStart` hook
+that loads the global index as a harness guarantee instead of a hope, and that
+reports loudly — into the session — if the root is missing, the index is empty,
+or the index points at files that no longer exist.
+
+If you install this pack without the hook, you have a one-tier memory system
+that is documented as a two-tier one. That gap is the single most common way
+this setup fails.
+
+---
+
 ## Why text files instead of a vector database or RAG pipeline
 
 **Transparent.** Every memory is a file you can open, read, edit, or delete with any text editor. No black box, no embedding layer to debug, no vendor lock-in.
