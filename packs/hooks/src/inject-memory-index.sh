@@ -75,8 +75,16 @@ index = pathlib.Path(os.environ["INDEXFILE"])
 body = index.read_text(encoding="utf-8", errors="replace")
 
 # Markdown links to local .md files, e.g. [Title](domain/topic.md)
+#
+# Strip inline code spans FIRST. An index that documents its own link format -
+# including the one shipped with this pack, which reads
+# `- [Title](file.md) - one-line hook` - would otherwise report its own example
+# as a missing file on a clean install. A false alarm on first run teaches the
+# user to ignore the alarm, which costs more than the check is worth.
+scannable = re.sub(r"`[^`]*`", "", body)
+
 broken = []
-for target in re.findall(r"\]\(([^)]+\.md)\)", body):
+for target in re.findall(r"\]\(([^)]+\.md)\)", scannable):
     if target.startswith(("http://", "https://", "#")):
         continue
     if not (memdir / target).exists():

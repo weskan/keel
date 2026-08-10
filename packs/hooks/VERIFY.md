@@ -29,16 +29,23 @@ FAIL → re-run INSTALL Step 2.
 
 ## Check 2 — The script emits valid JSON, and nothing before it
 
+**Do not use `python3` on Windows for this.** A default Windows box has only the
+zero-byte Microsoft Store stub on PATH, so `python3 -m json.tool` fails on a
+perfectly correct install and you will chase a bug that is not there. Use the
+platform's own JSON parser.
+
 macOS / Linux:
 
 ```bash
 bash ~/.claude/hooks/inject-memory-index.sh | python3 -m json.tool > /dev/null && echo PASS || echo FAIL
 ```
 
-Windows:
+Windows — `ConvertFrom-Json` is built in, no dependency:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\hooks\inject-memory-index.ps1" | python3 -m json.tool > $null
+$out = powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\hooks\inject-memory-index.ps1"
+try { $null = $out | ConvertFrom-Json; "PASS" } catch { "FAIL: $_" }
+if ($out.Substring(0,1) -ne '{') { "FAIL - output does not start with {" }
 ```
 
 FAIL usually means something is printing before the JSON — a shell profile
@@ -49,8 +56,16 @@ not work around it by having the hook swallow its own output.
 
 ## Check 3 — settings.json is valid and preserved the user's other keys
 
+macOS / Linux:
+
 ```bash
 python3 -m json.tool < ~/.claude/settings.json > /dev/null && echo "JSON OK"
+```
+
+Windows:
+
+```powershell
+try { $null = Get-Content -Raw "$env:USERPROFILE\.claude\settings.json" | ConvertFrom-Json; "JSON OK" } catch { "INVALID: $_" }
 ```
 
 Then compare against the backup:
