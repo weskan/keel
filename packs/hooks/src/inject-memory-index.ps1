@@ -40,8 +40,14 @@ $body = Get-Content -Raw -Encoding UTF8 -LiteralPath $Index
 
 # An index entry naming a file that no longer exists is stale recall waiting to
 # happen. Flag it rather than letting the agent cite a note that is gone.
+# Strip inline code spans FIRST. An index that documents its own link format -
+# including the one shipped with this pack - would otherwise report its own
+# example as a missing file on a clean install. A false alarm on first run
+# teaches the user to ignore the alarm, which costs more than the check is worth.
+$scannable = [regex]::Replace($body, '`[^`]*`', '')
+
 $broken = @()
-foreach ($m in [regex]::Matches($body, '\]\(([^)]+\.md)\)')) {
+foreach ($m in [regex]::Matches($scannable, '\]\(([^)]+\.md)\)')) {
   $target = $m.Groups[1].Value
   if ($target -match '^(https?://|#)') { continue }
   if (-not (Test-Path -LiteralPath (Join-Path $MemDir $target))) { $broken += $target }

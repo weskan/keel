@@ -32,11 +32,20 @@ Check:
 
 ```bash
 where git 2>NUL
+where bash 2>NUL
 ```
 
-Recommend the PowerShell script on Windows unless the user already depends on
-Git Bash. Not depending on Git Bash is the more durable choice on a machine the
-user does not administer.
+**Recommend the PowerShell script on Windows, in exec form, always.**
+
+The second command is the one that matters, and it is a trap worth knowing:
+on many Windows machines `bash` on PATH is `C:\WINDOWS\system32\bash.exe` —
+that is **WSL**, not Git Bash. WSL has no `/c/` mount (it uses `/mnt/c`), so a
+shell-form hook that resolves to it fails outright on a path that demonstrably
+exists. The error says "No such file or directory" about a file you can see.
+
+So on Windows: use the `.ps1` in exec form. If you genuinely need a shell script
+there, point at Git Bash by its literal absolute path
+(`C:\Program Files\Git\bin\bash.exe`) rather than trusting `bash` on PATH.
 
 ---
 
@@ -129,12 +138,35 @@ Do not write if this fails.
 
 Only if the user wants a directory mechanically protected from writes.
 
-Copy `src/guard-protected-path.sh` into `~/.claude/hooks/`, `chmod +x` it, and
-keep the `PreToolUse` block from the template. Ask the user which path segment
-to protect and set `KEEL_PROTECTED_SEGMENT` accordingly — the default is `/raw/`.
+**5a. Install the dependency FIRST, before wiring the hook.** This ordering is
+not cosmetic. The guard fails closed, so if it cannot parse a payload it blocks
+the write — and a hook inherits the environment of the session **as it was
+launched**, so a `PATH` entry added afterwards is invisible until the process
+restarts. Wire the hook first and install the dependency second, and you can
+hard-lock the running session out of every write with no in-session way back.
 
-Tell the user plainly that this guard depends on `jq` or `/usr/bin/python3`
-being present, and that it blocks with an explanation if neither is.
+```bash
+command -v jq || echo "install jq before continuing"
+```
+
+The guard has a dependency-free fallback, so a stock machine still works — but
+`jq` is the reliable path and worth installing. On Windows, `winget install
+jqlang.jq` (user scope) is enough; then confirm it is on the PATH the session
+already inherited, or copy the binary into a directory that already is.
+
+**5b. Copy the script** into `~/.claude/hooks/`, `chmod +x` it.
+
+**5c. Choose the protected segment deliberately.** The default
+`KEEL_PROTECTED_SEGMENT=/raw/` matches that segment **anywhere on the machine**,
+so it will also block `~/projects/something/raw/data.csv`. On a machine with
+unrelated data directories, narrow it — `/MyVault/raw/` rather than `/raw/`. The
+failure direction is safe: if the variable does not propagate, it falls back to
+the stricter default.
+
+**5d. On Windows, do not use the template's shell form for this hook.** See the
+warning in Step 4 — `bash` on PATH is frequently WSL, which cannot see `/c/`
+paths at all. Point at Git Bash explicitly with a literal absolute path, or skip
+the guard.
 
 ---
 

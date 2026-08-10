@@ -32,12 +32,24 @@
 
     "PreToolUse": [
       {
-        "_comment": "Optional. Blocks writes to a protected path. Remove this block if the user did not ask for a write guard.",
+        "_comment": "Optional. Blocks writes to a protected path. Remove this block if the user did not ask for a write guard. WINDOWS WARNING: do NOT use this shell form there - `bash` on PATH is frequently WSL (C:\\WINDOWS\\system32\\bash.exe), which has no /c/ mount and fails on paths that exist. On Windows use exec form with Git Bash's literal absolute path, as in the second entry below. Install jq BEFORE wiring this hook: it fails closed, and a hook cannot see a PATH entry added after the session launched.",
         "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/guard-protected-path.sh\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "_comment": "Windows variant of the same guard. Exec form, Git Bash by absolute path - never bare `bash`. Delete whichever of these two entries does not apply.",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": ["<ABSOLUTE-PATH>\\.claude\\hooks\\guard-protected-path.sh"],
             "timeout": 5
           }
         ]
